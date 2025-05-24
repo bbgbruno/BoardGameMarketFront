@@ -4,6 +4,7 @@ import 'pages/login_page.dart';
 import 'pages/cadastro_page.dart';
 import 'pages/meus_jogos_page.dart';
 import 'pages/jogos_venda_page.dart';
+import 'pages/cadastro_jogo.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,6 +27,10 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/jogos-venda',
       builder: (context, state) => const JogosVendaPage(),
+    ),
+     GoRoute(
+      path: '/cadastro-jogo',
+      builder: (context, state) => const CadastroJogoPage(),
     ),
   ],
 );

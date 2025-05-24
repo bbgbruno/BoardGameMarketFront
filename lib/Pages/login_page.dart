@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
+import './usuario_logado.dart';
 
 // ✅ Defina a URL da API
 const String apiUrl = 'http://localhost:5255/api';
@@ -34,6 +35,14 @@ class _LoginPageState extends State<LoginPage> {
       final response = await http.post(url);
 
       if (response.statusCode == 200) {
+        final usuario =  jsonDecode(response.body);  // Aqui retorna o usuário com o ID
+        
+        if (usuario != null) {
+          UsuarioLogado.id = usuario['id'];
+          UsuarioLogado.nome = usuario['nome'];
+          UsuarioLogado.email = usuario['email'];
+        };
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login realizado com sucesso')),
         );
