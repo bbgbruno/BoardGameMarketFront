@@ -48,6 +48,7 @@ class _CadastroJogoPageState extends State<CadastroJogoPage> {
         url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
+          'id':"",
           'titulo': titulo,
           'descricao': descricao,
           'imagemUrl': imagemUrl,

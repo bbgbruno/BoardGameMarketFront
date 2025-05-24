@@ -12,6 +12,7 @@ Future<bool> cadastrarUsuario(String nome, String email, String senha) async {
     url,
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode({
+      'id':"",
       'nome': nome,
       'email': email,
       'senhaHash': senha, // O backend espera no campo senhaHash
