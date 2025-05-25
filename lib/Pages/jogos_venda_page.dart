@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+
 const String apiUrl = 'http://localhost:5255/api';
 
 class JogosVendaPage extends StatefulWidget {
@@ -69,7 +70,7 @@ class _JogosVendaPageState extends State<JogosVendaPage> {
   }
 
   Future<void> abrirWhatsApp(String telefone) async {
-    final Uri url = Uri.parse('https://wa.me/$telefone');
+    final Uri url = Uri.parse('https://wa.me/55$telefone');
 
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
@@ -131,8 +132,7 @@ class _JogosVendaPageState extends State<JogosVendaPage> {
                                 prefixIcon: Icon(Icons.price_check),
                                 border: OutlineInputBorder(),
                               ),
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(decimal: true),
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
                               onChanged: (value) {
                                 precoMin = double.tryParse(value);
                                 aplicarFiltros();
@@ -147,8 +147,7 @@ class _JogosVendaPageState extends State<JogosVendaPage> {
                                 prefixIcon: Icon(Icons.price_check),
                                 border: OutlineInputBorder(),
                               ),
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(decimal: true),
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
                               onChanged: (value) {
                                 precoMax = double.tryParse(value);
                                 aplicarFiltros();
@@ -169,123 +168,149 @@ class _JogosVendaPageState extends State<JogosVendaPage> {
                           itemCount: jogosFiltrados.length,
                           itemBuilder: (context, index) {
                             final jogo = jogosFiltrados[index];
-                            final usuario = jogo['usuario'] ?? {};
-                            final telefone = usuario['telefone'] ?? '';
-                            final nomeUsuario = usuario['nome'] ?? 'Vendedor';
+                            final telefone = jogo['telefoneUsuario'] ?? '';
+                            final nomeUsuario = jogo['nomeUsuario'] ?? 'Vendedor';
 
                             return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              child: Card(
-                                elevation: 4,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                color: Colors.blueGrey.shade50,
-                                child: Row(
-                                  children: [
-                                    // 📷 Imagem
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(16),
-                                        bottomLeft: Radius.circular(16),
-                                      ),
-                                      child: Image.network(
-                                        jogo['imagemUrl'] ?? '',
-                                        width: 100,
-                                        height: 100,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              child: Stack(
+                                children: [
+                                  Card(
+                                    elevation: 4,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    color: Colors.blueGrey.shade50,
+                                    child: Row(
+                                      children: [
+                                        // 📷 Imagem
+                                        ClipRRect(
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(16),
+                                            bottomLeft: Radius.circular(16),
+                                          ),
+                                          child: Image.network(
+                                            jogo['imagemUrl'] ?? '',
                                             width: 100,
                                             height: 100,
-                                            color: Colors.grey.shade300,
-                                            child: const Icon(
-                                              Icons.image_not_supported,
-                                              size: 40,
-                                              color: Colors.grey,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return Container(
+                                                width: 100,
+                                                height: 100,
+                                                color: Colors.grey.shade300,
+                                                child: const Icon(
+                                                  Icons.image_not_supported,
+                                                  size: 40,
+                                                  color: Colors.grey,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
 
-                                    // 📄 Detalhes
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              jogo['titulo'] ?? '',
-                                              style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              jogo['descricao'] ?? '',
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(color: Colors.black54),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              'Vendedor: $nomeUsuario',
-                                              style: const TextStyle(
-                                                  fontSize: 12, color: Colors.black87),
-                                            ),
-                                            const SizedBox(height: 8),
-
-                                            // Estado, Preço e WhatsApp
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                        // 📄 Detalhes
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Container(
-                                                  padding: const EdgeInsets.symmetric(
-                                                      horizontal: 8, vertical: 4),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.blue.shade100,
-                                                    borderRadius: BorderRadius.circular(8),
-                                                  ),
-                                                  child: Text(
-                                                    jogo['estado'] ?? 'Usado',
-                                                    style: const TextStyle(
-                                                        fontSize: 12, color: Colors.blue),
-                                                  ),
-                                                ),
                                                 Text(
-                                                  'R\$ ${jogo['preco'].toStringAsFixed(2)}',
+                                                  jogo['titulo'] ?? '',
                                                   style: const TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Colors.green),
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
-                                                IconButton(
-                                                  tooltip: 'Falar no WhatsApp',
-                                                  icon: const Icon(FontAwesomeIcons.whatsapp, color: Colors.green),
-                                                  onPressed: () {
-                                                    if (telefone.isNotEmpty) {
-                                                      abrirWhatsApp(telefone);
-                                                    } else {
-                                                      ScaffoldMessenger.of(context)
-                                                          .showSnackBar(const SnackBar(
-                                                        content: Text(
-                                                            'Vendedor não possui telefone cadastrado'),
-                                                      ));
-                                                    }
-                                                  },
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  jogo['descricao'] ?? '',
+                                                  maxLines: 2,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                    color: Colors.black54,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+
+                                                // Estado, Preço e WhatsApp
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Container(
+                                                      padding: const EdgeInsets.symmetric(
+                                                          horizontal: 8, vertical: 4),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.blue.shade100,
+                                                        borderRadius: BorderRadius.circular(8),
+                                                      ),
+                                                      child: Text(
+                                                        jogo['estado'] ?? 'Usado',
+                                                        style: const TextStyle(
+                                                          fontSize: 12,
+                                                          color: Colors.blue,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      'R\$ ${jogo['preco'].toStringAsFixed(2)}',
+                                                      style: const TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: Colors.green,
+                                                      ),
+                                                    ),
+                                                    IconButton(
+                                                      tooltip: 'Falar no WhatsApp',
+                                                      icon: const Icon(
+                                                        FontAwesomeIcons.whatsapp,
+                                                        color: Colors.green,
+                                                      ),
+                                                      onPressed: () {
+                                                        if (telefone.isNotEmpty) {
+                                                          abrirWhatsApp(telefone);
+                                                        } else {
+                                                          ScaffoldMessenger.of(context)
+                                                              .showSnackBar(const SnackBar(
+                                                            content: Text(
+                                                                'Vendedor não possui telefone cadastrado'),
+                                                          ));
+                                                        }
+                                                      },
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
-                                          ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  // 🏷️ Nome do vendedor no canto superior direito
+                                  Positioned(
+                                    top: 8,
+                                    right: 16,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.7),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Text(
+                                        nomeUsuario.isNotEmpty ? nomeUsuario : 'Vendedor',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             );
                           },

@@ -5,23 +5,25 @@ import 'package:http/http.dart' as http;
 
 const String apiUrl = 'http://localhost:5255/api'; // Altere se necessário
 
-Future<bool> cadastrarUsuario(String nome, String email, String senha) async {
+Future<bool> cadastrarUsuario(
+    String nome, String email, String senha, String telefone, String cidade) async {
   final url = Uri.parse('$apiUrl/auth/register');
 
   final response = await http.post(
     url,
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode({
-      'id':"",
+      'id': "",
       'nome': nome,
       'email': email,
-      'senhaHash': senha, // O backend espera no campo senhaHash
+      'senhaHash': senha, // Backend espera no campo senhaHash
+      'telefone': telefone,
+      'cidade': cidade,
     }),
   );
 
   return response.statusCode == 200;
 }
-
 
 class CadastroPage extends StatefulWidget {
   const CadastroPage({super.key});
@@ -34,12 +36,16 @@ class _CadastroPageState extends State<CadastroPage> {
   final nomeController = TextEditingController();
   final emailController = TextEditingController();
   final senhaController = TextEditingController();
+  final telefoneController = TextEditingController();
+  final cidadeController = TextEditingController();
 
-   void realizarCadastro() async {
+  void realizarCadastro() async {
     final sucesso = await cadastrarUsuario(
-      nomeController.text,
-      emailController.text,
-      senhaController.text,
+      nomeController.text.trim(),
+      emailController.text.trim(),
+      senhaController.text.trim(),
+      telefoneController.text.trim(),
+      cidadeController.text.trim(),
     );
 
     if (sucesso) {
@@ -67,6 +73,8 @@ class _CadastroPageState extends State<CadastroPage> {
               children: [
                 const Icon(Icons.person_add, size: 80, color: Colors.blue),
                 const SizedBox(height: 16),
+
+                // Nome
                 TextField(
                   controller: nomeController,
                   decoration: const InputDecoration(
@@ -75,6 +83,8 @@ class _CadastroPageState extends State<CadastroPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
+
+                // Email
                 TextField(
                   controller: emailController,
                   decoration: const InputDecoration(
@@ -83,6 +93,8 @@ class _CadastroPageState extends State<CadastroPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
+
+                // Senha
                 TextField(
                   controller: senhaController,
                   decoration: const InputDecoration(
@@ -91,7 +103,30 @@ class _CadastroPageState extends State<CadastroPage> {
                   ),
                   obscureText: true,
                 ),
+                const SizedBox(height: 16),
+
+                // Telefone
+                TextField(
+                  controller: telefoneController,
+                  decoration: const InputDecoration(
+                    labelText: 'Telefone',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.phone,
+                ),
+                const SizedBox(height: 16),
+
+                // Cidade
+                TextField(
+                  controller: cidadeController,
+                  decoration: const InputDecoration(
+                    labelText: 'Cidade',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
                 const SizedBox(height: 24),
+
+                // Botão
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(

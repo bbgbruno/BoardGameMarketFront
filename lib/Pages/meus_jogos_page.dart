@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
-
 import 'usuario_logado.dart';
 
 const String apiUrl = 'http://localhost:5255/api';
@@ -20,8 +19,6 @@ class _MeusJogosPageState extends State<MeusJogosPage> {
   bool isLoading = true;
 
   String buscaTitulo = '';
-  double? precoMin;
-  double? precoMax;
 
   @override
   void initState() {
@@ -60,11 +57,11 @@ class _MeusJogosPageState extends State<MeusJogosPage> {
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Jogo deletado com sucesso')),
+          const SnackBar(content: Text('Jogo excluído com sucesso')),
         );
         carregarJogos();
       } else {
-        throw Exception('Erro ao deletar jogo');
+        throw Exception('Erro ao excluir jogo');
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -77,13 +74,7 @@ class _MeusJogosPageState extends State<MeusJogosPage> {
     setState(() {
       jogosFiltrados = jogos.where((jogo) {
         final titulo = (jogo['titulo'] ?? '').toString().toLowerCase();
-        final preco = (jogo['preco'] ?? 0).toDouble();
-
-        final filtroTitulo = titulo.contains(buscaTitulo.toLowerCase());
-        final filtroPrecoMin = precoMin == null || preco >= precoMin!;
-        final filtroPrecoMax = precoMax == null || preco <= precoMax!;
-
-        return filtroTitulo && filtroPrecoMin && filtroPrecoMax;
+        return titulo.contains(buscaTitulo.toLowerCase());
       }).toList();
     });
   }
@@ -109,66 +100,32 @@ class _MeusJogosPageState extends State<MeusJogosPage> {
               context.go('/jogos-venda');
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
+            onPressed: () {
+              context.go('/');
+            },
+          ),
         ],
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
               children: [
-                // 🔍 Filtros
+                // 🔍 Filtro por título
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      // Busca por título
-                      TextField(
-                        decoration: const InputDecoration(
-                          labelText: 'Buscar por nome',
-                          prefixIcon: Icon(Icons.search),
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          buscaTitulo = value;
-                          aplicarFiltros();
-                        },
-                      ),
-                      const SizedBox(height: 8),
-
-                      // Filtro por preço
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              decoration: const InputDecoration(
-                                labelText: 'Preço mín',
-                                prefixIcon: Icon(Icons.price_check),
-                                border: OutlineInputBorder(),
-                              ),
-                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                              onChanged: (value) {
-                                precoMin = double.tryParse(value);
-                                aplicarFiltros();
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: TextField(
-                              decoration: const InputDecoration(
-                                labelText: 'Preço máx',
-                                prefixIcon: Icon(Icons.price_check),
-                                border: OutlineInputBorder(),
-                              ),
-                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                              onChanged: (value) {
-                                precoMax = double.tryParse(value);
-                                aplicarFiltros();
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      labelText: 'Buscar por nome',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (value) {
+                      buscaTitulo = value;
+                      aplicarFiltros();
+                    },
                   ),
                 ),
 
@@ -183,7 +140,8 @@ class _MeusJogosPageState extends State<MeusJogosPage> {
                             final jogoId = jogo['id'] ?? jogo['Id'];
 
                             return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
                               child: Card(
                                 elevation: 4,
                                 shape: RoundedRectangleBorder(
@@ -203,7 +161,8 @@ class _MeusJogosPageState extends State<MeusJogosPage> {
                                         width: 100,
                                         height: 100,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
                                           return Container(
                                             width: 100,
                                             height: 100,
@@ -223,71 +182,96 @@ class _MeusJogosPageState extends State<MeusJogosPage> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(12.0),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               jogo['titulo'] ?? '',
                                               style: const TextStyle(
-                                                  fontSize: 18, fontWeight: FontWeight.bold),
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                             const SizedBox(height: 4),
                                             Text(
                                               jogo['descricao'] ?? '',
                                               maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(color: Colors.black54),
+                                              style: const TextStyle(
+                                                  color: Colors.black54),
                                             ),
                                             const SizedBox(height: 8),
 
                                             // Estado, Preço e Deletar
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Container(
-                                                  padding: const EdgeInsets.symmetric(
-                                                      horizontal: 8, vertical: 4),
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 4),
                                                   decoration: BoxDecoration(
-                                                    color: Colors.blue.shade100,
-                                                    borderRadius: BorderRadius.circular(8),
+                                                    color:
+                                                        Colors.blue.shade100,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
                                                   ),
                                                   child: Text(
                                                     jogo['estado'] ?? 'Usado',
                                                     style: const TextStyle(
-                                                        fontSize: 12, color: Colors.blue),
+                                                        fontSize: 12,
+                                                        color: Colors.blue),
                                                   ),
                                                 ),
                                                 Text(
                                                   'R\$ ${jogo['preco'].toStringAsFixed(2)}',
                                                   style: const TextStyle(
                                                       fontSize: 16,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: Colors.green),
                                                 ),
-                                                IconButton(
-                                                  tooltip: 'Deletar jogo',
-                                                  icon: const Icon(Icons.delete, color: Colors.red),
+                                                TextButton.icon(
+                                                  icon: const Icon(Icons.delete,
+                                                      color: Colors.red),
+                                                  label: const Text(
+                                                    'Excluir',
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  ),
                                                   onPressed: () {
                                                     showDialog(
                                                       context: context,
-                                                      builder: (ctx) => AlertDialog(
-                                                        title: const Text('Confirmar exclusão'),
+                                                      builder: (ctx) =>
+                                                          AlertDialog(
+                                                        title: const Text(
+                                                            'Confirmar exclusão'),
                                                         content: const Text(
-                                                            'Tem certeza que deseja deletar este jogo?'),
+                                                            'Tem certeza que deseja excluir este jogo?'),
                                                         actions: [
                                                           TextButton(
                                                             onPressed: () {
-                                                              Navigator.of(ctx).pop();
+                                                              Navigator.of(ctx)
+                                                                  .pop();
                                                             },
-                                                            child: const Text('Cancelar'),
+                                                            child: const Text(
+                                                                'Cancelar'),
                                                           ),
                                                           TextButton(
                                                             onPressed: () {
-                                                              Navigator.of(ctx).pop();
-                                                              deletarJogo( jogo['id'] );
+                                                              Navigator.of(ctx)
+                                                                  .pop();
+                                                              deletarJogo(
+                                                                  jogoId);
                                                             },
                                                             child: const Text(
-                                                              'Deletar',
-                                                              style: TextStyle(color: Colors.red),
+                                                              'Excluir',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .red),
                                                             ),
                                                           ),
                                                         ],
