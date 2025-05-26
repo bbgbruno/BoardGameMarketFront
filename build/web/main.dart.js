@@ -40761,7 +40761,7 @@ break
 case 4:p=3
 e=o.pop()
 j=A.an(e)
-n.c.ac(t.J).f.ff(A.ur(null,null,null,null,null,B.w,null,A.d4("Erro ao conectar: "+A.l(j),null,null,null,null,null,null),null,B.aG,null,null,null,null,null,null,null,null,null))
+n.c.ac(t.J).f.ff(A.ur(null,null,null,null,null,B.w,null,A.d4("Erro ao conectar com a api: "+A.l(j),null,null,null,null,null,null),null,B.aG,null,null,null,null,null,null,null,null,null))
 s=6
 break
 case 3:s=2
