@@ -6,7 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
-const String apiUrl = 'http://localhost:5255/api';
+const String apiUrl = 'https://boardgamemarketapi.onrender.com/api';
 
 class JogosVendaPage extends StatefulWidget {
   const JogosVendaPage({super.key});

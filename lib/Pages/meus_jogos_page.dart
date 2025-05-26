@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'usuario_logado.dart';
 
-const String apiUrl = 'http://localhost:5255/api';
+const String apiUrl = 'https://boardgamemarketapi.onrender.com/api';
 
 class MeusJogosPage extends StatefulWidget {
   const MeusJogosPage({super.key});

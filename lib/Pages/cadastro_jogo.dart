@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import './usuario_logado.dart';
 
 // ✅ URL da sua API
-const String apiUrl = 'http://localhost:5255/api';
+const String apiUrl = 'https://boardgamemarketapi.onrender.com/api';
 
 class CadastroJogoPage extends StatefulWidget {
   const CadastroJogoPage({super.key});

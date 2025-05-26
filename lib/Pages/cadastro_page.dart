@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-const String apiUrl = 'http://localhost:5255/api'; // Altere se necessário
+const String apiUrl = 'https://boardgamemarketapi.onrender.com/api'; // Altere se necessário
 
 Future<bool> cadastrarUsuario(
     String nome, String email, String senha, String telefone, String cidade) async {
