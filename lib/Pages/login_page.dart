@@ -54,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao conectar: $e')),
+        SnackBar(content: Text('Erro ao conectar com a api: $e')),
       );
     }
   }
